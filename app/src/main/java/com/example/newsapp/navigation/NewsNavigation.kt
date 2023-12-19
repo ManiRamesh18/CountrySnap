@@ -57,7 +57,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -70,9 +69,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import coil.decode.SvgDecoder
-import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.newsapp.R
@@ -129,7 +126,6 @@ fun HomeScreen(openDrawer: ()-> Unit, viewModel: NewsViewModel)
         }
         else if(it.postData.isNotEmpty())
         {
-            var showBottomSheet by remember { mutableStateOf(false) }
 
             Column (modifier = Modifier
                 .fillMaxSize()
