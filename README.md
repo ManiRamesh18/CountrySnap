@@ -28,4 +28,4 @@ This Android app allows users to view a list of countries and, upon clicking a c
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/country-flag-viewer.git
+   git clone https://github.com/ManiRamesh18/CountrySnap.git
