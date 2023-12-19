@@ -4,6 +4,11 @@ This Android app allows users to view a list of countries and, upon clicking a c
 
 ## Table of Contents
 - [Features](#features)
+- [Screenshots](#screenshots)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Tech Stack](#tech-stack)
 
 ## Features
 
@@ -24,6 +29,11 @@ This Android app allows users to view a list of countries and, upon clicking a c
 - A device or emulator running Android API level 16 or higher.
 
 ### Installation
+
+## Tech Stack
+- UI: Jetpack Compose
+- Image Loading: Coil
+- Networking: Retrofit
 
 1. Clone the repository:
 
