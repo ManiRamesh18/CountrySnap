@@ -11,7 +11,7 @@ class NetworkResponse
     var msg : String ?= null
 
     @SerializedName("data")
-    var countryList : List<College> ?= null
+    var countryList : List<Country> ?= null
 
 
 }
