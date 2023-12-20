@@ -1,13 +1,12 @@
 package com.example.newsapp.ui
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newsapp.data.model.College
-import com.example.newsapp.data.repo.CollegeListRepository
+import com.example.newsapp.data.model.Country
+import com.example.newsapp.data.repo.CountryListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +14,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class NewsViewModel @Inject constructor(private var collegeListRepository: CollegeListRepository): ViewModel()
+class NewsViewModel @Inject constructor(private var countryListRepository: CountryListRepository): ViewModel()
 {
     private val _collegeList : MutableState<Result> = mutableStateOf(Result(isLoading =true));
     val collegeList : State<Result> = _collegeList
@@ -29,9 +28,8 @@ class NewsViewModel @Inject constructor(private var collegeListRepository: Colle
 
     private fun getAllList()
     {
-        Log.d("ViewModel", "Initiated Get Call")
         viewModelScope.launch{
-            val response = collegeListRepository.getCountryFlags()
+            val response = countryListRepository.getCountryFlags()
 
             withContext(Dispatchers.Main)
             {
@@ -54,7 +52,7 @@ class NewsViewModel @Inject constructor(private var collegeListRepository: Colle
 
 data class Result(
     val isLoading : Boolean = false,
-    val postData : List<College> = emptyList(),
+    val postData : List<Country> = emptyList(),
     val errorMessage : String = ""
 )
 

@@ -1,7 +1,7 @@
 package com.example.newsapp.di
 
 import com.example.newsapp.data.network.ApiService
-import com.example.newsapp.data.repo.CollegeListRepository
+import com.example.newsapp.data.repo.CountryListRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,9 +17,9 @@ import java.util.concurrent.TimeUnit
 object Module {
 
     @Provides
-    fun provideCollegeListRepository(apiService: ApiService): CollegeListRepository
+    fun provideCollegeListRepository(apiService: ApiService): CountryListRepository
     {
-        return CollegeListRepository(apiService)
+        return CountryListRepository(apiService)
     }
 
     @Provides

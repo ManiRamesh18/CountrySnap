@@ -1,11 +1,12 @@
 package com.example.newsapp.navigation
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,7 +23,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.BottomSheetDefaults
@@ -30,15 +30,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -59,8 +55,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -72,48 +70,44 @@ import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import coil.size.Size
-import com.example.newsapp.R
-import com.example.newsapp.data.model.College
+import com.example.newsapp.data.model.Country
 import com.example.newsapp.ui.NewsViewModel
 import com.example.newsapp.ui.theme.NewsAppTheme
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsNavigation()
 {
     NewsAppTheme {
+
         val navController = rememberNavController()
 
         val viewModal = viewModel(modelClass = NewsViewModel::class.java)
 
-        val coroutineScope = rememberCoroutineScope()
-
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-        ModalNavigationDrawer(drawerContent = {},
-            drawerState = drawerState
-        ) {
-            NewsAppHost(navController, drawerState = { coroutineScope.launch { drawerState.open() }}, viewModel = viewModal)
+        ModalNavigationDrawer(drawerContent = {}, drawerState = drawerState)
+        {
+            NewsAppHost(navController, viewModel = viewModal)
         }
     }
 }
 
 
 @Composable
-fun NewsAppHost(navController: NavHostController,drawerState : ()->Unit, viewModel: NewsViewModel)
+fun NewsAppHost(navController: NavHostController, viewModel: NewsViewModel)
 {
     NavHost(navController = navController, startDestination = NewsNavigationActions.HOME)
     {
         composable(NewsNavigationActions.HOME)
         {
-            HomeScreen(drawerState, viewModel = viewModel)
+            HomeScreen(viewModel = viewModel)
         }
     }
 }
 
 @Composable
-fun HomeScreen(openDrawer: ()-> Unit, viewModel: NewsViewModel)
+fun HomeScreen(viewModel: NewsViewModel)
 {
     viewModel.collegeList.value.let { it->
         if(it.isLoading)
@@ -126,16 +120,20 @@ fun HomeScreen(openDrawer: ()-> Unit, viewModel: NewsViewModel)
         }
         else if(it.postData.isNotEmpty())
         {
-
             Column (modifier = Modifier
                 .fillMaxSize()
                 .padding(10.dp))
             {
-                TopBar(openDrawer = openDrawer)
+                TopBar()
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Column (modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.onPrimary)){
 
-                NewsList(data =it.postData, viewModel)
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    NewsList(data =it.postData, viewModel)
+                }
             }
         }
 
@@ -144,7 +142,7 @@ fun HomeScreen(openDrawer: ()-> Unit, viewModel: NewsViewModel)
 }
 
 @Composable
-fun NewsList(data : List<College>, viewModel: NewsViewModel)
+fun NewsList(data : List<Country>, viewModel: NewsViewModel)
 {
     val lazyState = rememberLazyListState()
 
@@ -202,13 +200,12 @@ fun ScrollToTopButton(onClick: () -> Unit) {
             .fillMaxSize()
             .padding(bottom = 50.dp), Alignment.BottomCenter
     ) {
-        Button(
-            onClick = { onClick() }, modifier = Modifier
+        Button(onClick = { onClick() }, modifier = Modifier
                 .shadow(10.dp, shape = CircleShape)
                 .clip(shape = CircleShape)
                 .size(65.dp),
             colors = ButtonDefaults.buttonColors(
-                contentColor = Color.Green
+                contentColor = Color.Green,
             )
         ) {
             Icon(Icons.Filled.KeyboardArrowUp, "arrow up")
@@ -227,6 +224,7 @@ fun ShowModalBottomSheet(viewModel: NewsViewModel, onDismiss: ()-> Unit)
         dragHandle = { BottomSheetDefaults.DragHandle()},
         modifier = Modifier
             .height(500.dp)
+            .padding(10.dp)
             .fillMaxWidth())
     {
         viewModel.flagUnicode.let {flag->
@@ -247,17 +245,16 @@ fun ShowModalBottomSheet(viewModel: NewsViewModel, onDismiss: ()-> Unit)
                 Image(painter = painterResponse,
                     contentDescription ="Flag Image",
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit)
+                    contentScale = ContentScale.FillBounds)
             }
         }
     }
 }
 
 @Composable
-fun News(newsData : College, modifier: Modifier = Modifier, onCardClick : ()-> Unit)
+fun News(newsData : Country, modifier: Modifier = Modifier, onCardClick : ()-> Unit)
 {
-    Card (
-        colors = CardDefaults.cardColors(
+    Card (colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primary),
         modifier = modifier
             .width(240.dp)
@@ -265,33 +262,36 @@ fun News(newsData : College, modifier: Modifier = Modifier, onCardClick : ()-> U
             .clickable(true, onClick = onCardClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)){
 
-        Text(
-            modifier = Modifier.padding(vertical = 15.dp, horizontal = 20.dp),
-            text = newsData.name,
-            fontFamily = FontFamily.Default,
-            fontSize = 20.sp)
-
+        Row (modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center)
+        {
+            Text(
+                modifier = Modifier
+                    .padding(vertical = 15.dp, horizontal = 20.dp),
+                text = newsData.name,
+                fontFamily = FontFamily.Default,
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp)
+        }
     }
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(openDrawer: () -> Unit)
+fun TopBar()
 {
-    Row (modifier = Modifier.fillMaxWidth())
+    Row (modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.primary))
     {
         CenterAlignedTopAppBar(
             title = {
-                Text(text = "Test App") },
-            navigationIcon = {
-                IconButton(onClick = openDrawer  )
-                {
-                    Icon(painter = painterResource(id = R.drawable.news_logo),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary)
-                             }
-            },
-            actions = {})
+                Text(text = "Country Snap",
+                    fontFamily = FontFamily.Default,
+                    fontSize = 20.sp,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight(500)
+                ) })
     }
 }
