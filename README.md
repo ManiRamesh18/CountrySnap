@@ -15,11 +15,9 @@ This Android app allows users to view a list of countries and, upon clicking a c
 - Display a list of countries.
 - Show the flag of the selected country in a bottom sheet.
 
-## Screenshots
+## Screen Recording
 
-![Country List](screenshots/country_list.png)
-
-![Bottom Sheet](screenshots/bottom_sheet.png)
+[Screen_recording_20231220_203822.webm](https://github.com/ManiRamesh18/CountrySnap/assets/50194808/314e2602-4b77-4f34-b635-93c2ee7bf3b7)
 
 ## Getting Started
 
@@ -36,6 +34,7 @@ This Android app allows users to view a list of countries and, upon clicking a c
 - Networking: Retrofit
 
 1. Clone the repository:
+
 
    ```bash
    git clone https://github.com/ManiRamesh18/CountrySnap.git
